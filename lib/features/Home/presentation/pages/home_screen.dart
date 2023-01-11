@@ -26,14 +26,14 @@ class HomePage extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 14),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
-              Vspace(height: 20),
-              CustomHeadline(text: 'Categories'),
-              Vspace(height: 16),
-              CategoriesList(),
-              Vspace(height: 20),
-              CustomHeadline(text: 'Products'),
-              Vspace(height: 20),
+            children: [
+              const Vspace(height: 20),
+              const CustomHeadline(text: 'Categories'),
+              const Vspace(height: 16),
+              const CategoriesList(),
+              const Vspace(height: 20),
+              const CustomHeadline(text: 'Products'),
+              const Vspace(height: 20),
               Expanded(child: ProductsWidget()),
             ],
           ),

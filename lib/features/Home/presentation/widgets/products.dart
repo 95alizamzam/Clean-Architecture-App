@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -9,8 +10,9 @@ import '../../domain/entities/product.dart';
 import '../bloc/home_bloc.dart';
 
 class ProductsWidget extends StatelessWidget {
-  const ProductsWidget({super.key});
+  ProductsWidget({super.key});
 
+  bool isAndroid = defaultTargetPlatform == TargetPlatform.android;
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<HomeBloc, HomeState>(
@@ -26,9 +28,9 @@ class ProductsWidget extends StatelessWidget {
           return SizedBox(
             child: GridView.count(
               crossAxisCount: 2,
-              mainAxisSpacing: 20.h,
-              crossAxisSpacing: 20.w,
-              childAspectRatio: 2 / 3.8,
+              mainAxisSpacing: 10.h,
+              crossAxisSpacing: 10.w,
+              childAspectRatio: isAndroid ? 2.h / 3.5.h : 1.h / 2.h,
               children: products.map((ProductEntity product) {
                 return ProductItem(product: product);
               }).toList(),
@@ -59,7 +61,7 @@ class ProductItem extends StatelessWidget {
         children: [
           Image(
             image: NetworkImage(product.image),
-            height: 150.h,
+            height: 140.h,
             width: double.maxFinite,
             fit: BoxFit.fill,
           ),
@@ -70,8 +72,6 @@ class ProductItem extends StatelessWidget {
                   fontSize: 12.sp,
                   color: Colors.black,
                 ),
-            // maxLines: 1,
-            // overflow: TextOverflow.ellipsis,
           ),
           const Vspace(height: 10),
           Text(
@@ -80,10 +80,10 @@ class ProductItem extends StatelessWidget {
                   fontSize: 12.sp,
                   color: Colors.black,
                 ),
-            maxLines: 4,
+            maxLines: 3,
             overflow: TextOverflow.ellipsis,
           ),
-          const Spacer(),
+          const Vspace(height: 14),
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -117,6 +117,7 @@ class ProductItem extends StatelessWidget {
               ),
             ],
           ),
+          const Vspace(height: 8),
         ],
       ),
     );
@@ -124,7 +125,7 @@ class ProductItem extends StatelessWidget {
 
   String processTitle(String title) {
     if (title.trim().length > 20) {
-      return '${title.substring(0, 20)}...';
+      return '${title.substring(0, 15)}...';
     }
     return title;
   }
