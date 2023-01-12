@@ -1,14 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:twekl_test_app/core/colors.dart';
 import 'package:twekl_test_app/features/Home/presentation/bloc/home_bloc.dart';
 import 'package:twekl_test_app/shared/components/sized_box.dart';
 
+import '../../../../shared/components/auto_sized_text.dart';
 import '../../../../shared/components/error_widget.dart';
 import '../../../../shared/components/loader.dart';
 
-class CategoriesList extends StatelessWidget {
+class CategoriesList extends StatefulWidget {
   const CategoriesList({super.key});
+
+  @override
+  State<CategoriesList> createState() => _CategoriesListState();
+}
+
+class _CategoriesListState extends State<CategoriesList> {
+  int selectedIndex = -1;
 
   @override
   Widget build(BuildContext context) {
@@ -25,8 +34,16 @@ class CategoriesList extends StatelessWidget {
               scrollDirection: Axis.horizontal,
               itemCount: cats.length,
               separatorBuilder: (context, index) => const Hspace(width: 10),
-              itemBuilder: (context, index) => CategoryItem(
-                catLabel: cats[index],
+              itemBuilder: (context, index) => GestureDetector(
+                onTap: () {
+                  setState(() => selectedIndex = index);
+                },
+                child: CategoryItem(
+                  catLabel: cats[index],
+                  bgColor: index == selectedIndex
+                      ? primaryColor.withOpacity(.3)
+                      : Colors.transparent,
+                ),
               ),
             ),
           );
@@ -44,24 +61,30 @@ class CategoriesList extends StatelessWidget {
 }
 
 class CategoryItem extends StatelessWidget {
-  const CategoryItem({super.key, required this.catLabel});
+  const CategoryItem({
+    super.key,
+    required this.catLabel,
+    required this.bgColor,
+  });
   final String catLabel;
+  final Color bgColor;
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 120.w,
+      padding: EdgeInsets.symmetric(horizontal: 10.w),
       decoration: BoxDecoration(
-        color: Colors.transparent,
+        // color: Colors.transparent,
+        color: bgColor,
+
         borderRadius: BorderRadius.circular(5),
-        border: Border.all(
-          color: Colors.white,
-        ),
+        border: Border.all(color: Colors.white),
       ),
       child: Center(
-        child: Text(
-          catLabel,
+        child: CustomSizedText(
+          text: catLabel,
           style: Theme.of(context).textTheme.bodySmall!,
-          textAlign: TextAlign.center,
+          align: TextAlign.center,
         ),
       ),
     );

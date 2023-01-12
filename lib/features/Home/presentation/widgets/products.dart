@@ -2,10 +2,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:twekl_test_app/shared/components/auto_sized_text.dart';
 import 'package:twekl_test_app/shared/components/error_widget.dart';
-import 'package:twekl_test_app/shared/components/sized_box.dart';
 
 import '../../../../shared/components/loader.dart';
+import '../../../../shared/components/sized_box.dart';
 import '../../domain/entities/product.dart';
 import '../bloc/home_bloc.dart';
 
@@ -25,16 +26,16 @@ class ProductsWidget extends StatelessWidget {
           );
         } else if (state is GetProductsDoneState) {
           final List<ProductEntity> products = state.products;
-          return SizedBox(
-            child: GridView.count(
+          return GridView.builder(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
+              mainAxisExtent: 300.h, //* insted of aspectRatio
               mainAxisSpacing: 10.h,
               crossAxisSpacing: 10.w,
-              childAspectRatio: isAndroid ? 2.h / 3.5.h : 1.h / 2.h,
-              children: products.map((ProductEntity product) {
-                return ProductItem(product: product);
-              }).toList(),
             ),
+            itemCount: products.length,
+            itemBuilder: (context, index) =>
+                ProductItem(product: products[index]),
           );
         } else {
           return const Loader();
@@ -59,36 +60,40 @@ class ProductItem extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Image(
-            image: NetworkImage(product.image),
-            height: 140.h,
-            width: double.maxFinite,
-            fit: BoxFit.fill,
+          Expanded(
+            flex: 6,
+            child: Image(
+              image: NetworkImage(product.image),
+              // height: 150.h,
+              width: double.maxFinite,
+              fit: BoxFit.fill,
+            ),
           ),
           const Vspace(height: 10),
-          Text(
-            processTitle(product.title),
+          CustomSizedText(
+            text: product.title,
             style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                   fontSize: 12.sp,
                   color: Colors.black,
+                  fontWeight: FontWeight.w500,
                 ),
           ),
-          const Vspace(height: 10),
-          Text(
-            product.description,
+          const Vspace(height: 4),
+          CustomSizedText(
+            text: product.description,
+            maxLine: 3,
             style: Theme.of(context).textTheme.bodySmall!.copyWith(
                   fontSize: 12.sp,
                   color: Colors.black,
+                  fontWeight: FontWeight.w400,
                 ),
-            maxLines: 3,
-            overflow: TextOverflow.ellipsis,
           ),
-          const Vspace(height: 14),
+          const Vspace(height: 4),
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                'Product Details',
+              CustomSizedText(
+                text: 'Product Details',
                 style: TextStyle(
                   color: Colors.black,
                   fontSize: 12.sp,
@@ -117,16 +122,8 @@ class ProductItem extends StatelessWidget {
               ),
             ],
           ),
-          const Vspace(height: 8),
         ],
       ),
     );
-  }
-
-  String processTitle(String title) {
-    if (title.trim().length > 20) {
-      return '${title.substring(0, 15)}...';
-    }
-    return title;
   }
 }
